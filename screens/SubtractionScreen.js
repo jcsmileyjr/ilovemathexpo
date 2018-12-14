@@ -10,7 +10,7 @@ import Equation from "../components/Equation.js";
 import SubmitButton from "../components/SubmitButton.js";
 import Footer from "../components/Footer.js";
 
-export default class MultiplyScreen extends Component {
+export default class SubtractionScreen extends Component {
   static navigationOptions ={
     headerTitle: <Nav />,  
   }
