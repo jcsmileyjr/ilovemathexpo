@@ -5,7 +5,7 @@ export default class Equation extends Component{
     
  
 submit = (text) =>{
-  this.props.calculate();
+  this.props.calculate(); //pass down prop method from clickSubmit()
   this.textInput.clear(); //clear the textInput element
 }    
   render(){
@@ -51,14 +51,10 @@ const styles = StyleSheet.create({
   EquationMiddleLine:{
    flexDirection:"row",
    alignItems:"center", 
-   justifyContent:"space-between",
-   //borderBottomWidth:1,
-   //margin:50,
-   //borderStyle:"solid",
-   //borderColor:"black"
+   justifyContent:"space-between"
   },
   equationTextSize:{
-   fontSize:32      
+   fontSize:36      
   },
   equationOperater:{
     flex: 1,

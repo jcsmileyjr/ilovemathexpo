@@ -4,7 +4,7 @@ import { Text, View, StyleSheet } from 'react-native';
 export default class MathHeader extends Component{
   render(){
     return(
-      <View style={styles.homeFooterSection}>
+      <View style={styles.homeHeaderSection}>
       
         <Text>{this.props.currentQuestion + 0}/10</Text>
               
@@ -21,22 +21,16 @@ export default class MathHeader extends Component{
 }
 
 const styles= StyleSheet.create({
-  homeHeaderSection:{      
-   flex: 1,
-   alignItems:"center",
-   marginTop:10,
-   marginBottom:20
-  },
   homeHeaderText:{
    fontSize:18,
    textDecorationLine:"underline"
   },
-  homeFooterSection:{
+  homeHeaderSection:{
    flex: 1,
    flexDirection: "row",
    justifyContent:"space-around",
    alignItems:"center",
-   marginTop:10,
+   marginTop:5,
    marginBottom:20  
   }    
     
