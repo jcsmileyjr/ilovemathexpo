@@ -86,7 +86,7 @@ export default class AdditionScreen extends Component {
   
   //Method call in the updateCurrentCount method to end the game, show the last score, and reset the the state. 
   endGame = () =>{
-    if(this.state.currentCount >= 3){
+    if(this.state.currentCount >= 10){
         
       //method call to display the final score    
       this.showLastScore();
