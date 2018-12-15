@@ -69,7 +69,7 @@ export default class AdditionScreen extends Component {
       
     //Check if the user enter answer matches the correct answer. A correct or incorrect analysis is communicated to the user. If the answer is correct, the correct state is updated by one. 
     if(answer == rightAnswer){
-      Alert.alert("Correct");
+      this.setModalCorrectAnswerVisible(!this.state.modalCorrectAnswerVisible);
       this.setState((state) => {
         return {correct: state.correct + 1}
       })        
@@ -111,6 +111,7 @@ export default class AdditionScreen extends Component {
       })       
   }
 
+
   //method use in the equation and submitbutton component to check if the user answer is correct and update the currentCount state.
   clickSubmit = () => {
     this.checkAnwser();      
@@ -129,6 +130,11 @@ export default class AdditionScreen extends Component {
   //method to open/close final score modal
   setModalFinalScoreVisible(visible){
     this.setState({modalFinalScoreVisible: visible});
+  }
+
+  //method to open/close correct answer modal
+  setModalCorrectAnswerVisible(visible){
+    this.setState({modalCorrectAnswerVisible: visible});
   }
 
   render() {
@@ -157,6 +163,22 @@ export default class AdditionScreen extends Component {
             <TouchableOpacity
               style={styles.buttonStyle}
               onPress= {() => {this.resetState()}}>
+              <Text style={styles.modalButtonText}>Continue</Text>
+            </TouchableOpacity>            
+          </View>
+        </Modal>
+        <Modal
+          animationType ="slide"
+          transparent={false}
+          visible={this.state.modalCorrectAnswerVisible}
+          onRequestClose ={() => {this.setModalCorrectAnswerVisible(!this.state.modalCorrectAnswerVisible);}} >
+          <View style={styles.modalContainer}>
+            <Text style={styles.finalScoreSection}>
+              Correct
+            </Text>
+            <TouchableOpacity
+              style={styles.buttonStyle}
+              onPress= {() => {this.setModalCorrectAnswerVisible(!this.state.modalCorrectAnswerVisible);}}>
               <Text style={styles.modalButtonText}>Continue</Text>
             </TouchableOpacity>            
           </View>
