@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, View, StyleSheet, Alert } from 'react-native';
+import { Text, View, StyleSheet, Modal, TouchableOpacity } from 'react-native';
 
 //I'm not sure how but I think this allows me to use the navigate functionality of react navigation. 
 import { createStackNavigator, createBottomTabNavigator } from 'react-navigation';
@@ -11,10 +11,11 @@ import SubmitButton from "../components/SubmitButton.js";
 import Footer from "../components/Footer.js";
 
 export default class DivisionScreen extends Component {
+    
+  //set the mobile app header to the Nav component    
   static navigationOptions ={
     headerTitle: <Nav />,  
-  }
-
+  }  
 
   constructor(props){
     super(props);
@@ -23,7 +24,10 @@ export default class DivisionScreen extends Component {
       correct:0,        //number of questions been answered correctly
       lineA:10,         //top number of the equation
       lineB:1,          //bottom number of the equation
-      currentAnswer:0   //current user inputted answer
+      currentAnswer:0,   //current user inputted answer
+      modalFinalScoreVisible:false,  //tip from react-native documentation
+      modalCorrectAnswerVisible:false,
+      modalInCorrectAnswerVisible:false
     }
   }
 
@@ -65,21 +69,19 @@ export default class DivisionScreen extends Component {
       
     //Check if the user enter answer matches the correct answer. A correct or incorrect analysis is communicated to the user. If the answer is correct, the correct state is updated by one. 
     if(answer == rightAnswer){
-      Alert.alert("Correct");
+      this.setModalCorrectAnswerVisible(!this.state.modalCorrectAnswerVisible);
       this.setState((state) => {
         return {correct: state.correct + 1}
       })        
     }else{
-      Alert.alert("Wrong");
+      this.setModalInCorrectAnswerVisible(!this.state.modalInCorrectAnswerVisible);
     }  
       
   }
   
   //Method call in the updateCurrentcount method by the endGame function to display the final score. 
   showLastScore = () =>{
-    let finalScore = Math.ceil((this.state.correct/this.state.currentCount)* 100);
-    Alert.alert("Final Score: " + finalScore + "%");
-    
+    this.setModalFinalScoreVisible(!this.state.modalFinalScoreVisible);
   }
   
   //Method call in the updateCurrentCount method to end the game, show the last score, and reset the the state. 
@@ -87,8 +89,15 @@ export default class DivisionScreen extends Component {
     if(this.state.currentCount >= 10){
         
       //method call to display the final score    
-      this.showLastScore();    
-        
+      this.showLastScore();
+    }      
+  }
+  
+  //method called when the user close the Final Score modal when the quiz ends. This reset the game state and navigate the user to the home screen.
+  resetState = () =>{
+      //close the final score modal.
+      this.setModalFinalScoreVisible(!this.state.modalFinalScoreVisible);
+      
       //navigate the user to the Home screen
       this.props.navigation.navigate("Home");
         
@@ -100,9 +109,9 @@ export default class DivisionScreen extends Component {
       //reset the state to 0
       this.setState((state) => {
         return {correct: 0}
-      })         
-    }      
+      })       
   }
+
 
   //method use in the equation and submitbutton component to check if the user answer is correct and update the currentCount state.
   clickSubmit = () => {
@@ -117,8 +126,25 @@ export default class DivisionScreen extends Component {
         return {currentAnswer: text}
     })
   }
+  
+  //tips from react native documentation
+  //method to open/close final score modal
+  setModalFinalScoreVisible(visible){
+    this.setState({modalFinalScoreVisible: visible});
+  }
+
+  //method to open/close correct answer modal
+  setModalCorrectAnswerVisible(visible){
+    this.setState({modalCorrectAnswerVisible: visible});
+  }
+
+  //method to open/close incorrect answer modal
+  setModalInCorrectAnswerVisible(visible){
+    this.setState({modalInCorrectAnswerVisible: visible});
+  }
 
   render() {
+    let finalScore = Math.ceil((this.state.correct/this.state.currentCount)* 100);
     return (
       <View style={styles.container}>        
         <MathHeader title="Division" 
@@ -131,6 +157,54 @@ export default class DivisionScreen extends Component {
           getAnswer={this.updateAnswer} />
         <SubmitButton 
           calculate={this.clickSubmit}  />
+        <Modal
+          animationType ="slide"
+          transparent={false}
+          visible={this.state.modalFinalScoreVisible}
+          onRequestClose ={() => {this.resetState()}} >
+          <View style={styles.modalContainer}>
+            <Text style={styles.finalScoreSection}>
+              Final score: {finalScore}%
+            </Text>
+            <TouchableOpacity
+              style={styles.buttonStyle}
+              onPress= {() => {this.resetState()}}>
+              <Text style={styles.modalButtonText}>Continue</Text>
+            </TouchableOpacity>            
+          </View>
+        </Modal>
+        <Modal
+          animationType ="slide"
+          transparent={false}
+          visible={this.state.modalCorrectAnswerVisible}
+          onRequestClose ={() => {this.setModalCorrectAnswerVisible(!this.state.modalCorrectAnswerVisible);}} >
+          <View style={styles.modalContainer}>
+            <Text style={styles.finalScoreSection}>
+              Correct
+            </Text>
+            <TouchableOpacity
+              style={styles.buttonStyle}
+              onPress= {() => {this.setModalCorrectAnswerVisible(!this.state.modalCorrectAnswerVisible);}}>
+              <Text style={styles.modalButtonText}>Continue</Text>
+            </TouchableOpacity>            
+          </View>
+        </Modal>
+        <Modal
+          animationType ="slide"
+          transparent={false}
+          visible={this.state.modalInCorrectAnswerVisible}
+          onRequestClose ={() => {this.setModalInCorrectAnswerVisible(!this.state.modalInCorrectAnswerVisible);}} >
+          <View style={styles.modalContainer}>
+            <Text style={styles.finalScoreSection}>
+              Wrong
+            </Text>
+            <TouchableOpacity
+              style={styles.buttonStyle}
+              onPress= {() => {this.setModalInCorrectAnswerVisible(!this.state.modalInCorrectAnswerVisible);}}>
+              <Text style={styles.modalButtonText}>Continue</Text>
+            </TouchableOpacity>            
+          </View>
+        </Modal>
       </View>
     );
   }
@@ -140,7 +214,34 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor:"white"
+  },
+  modalContainer:{
+    flex: 1,
+    backgroundColor: "white",
+    justifyContent:"space-around",
+    alignItems:"center",
+    fontSize:32
+  },
+  buttonStyle:{
+    backgroundColor:"green",
+    borderColor:"#ccc",
+    borderWidth:1,
+    borderRadius:30,
+    color:"white",
+    fontSize:32,
+    fontWeight:"bold",
+    padding:12,
+    textAlign:"center",
+    overflow:"hidden",
+    width:"50%",
+    elevation: 1
+  },
+  finalScoreSection:{
+    fontSize:32      
+  },
+  modalButtonText:{
+    fontSize:32,
+    color:"white"
   }
   
 });
-

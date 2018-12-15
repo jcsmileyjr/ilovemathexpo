@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, View, StyleSheet, Alert, Modal, TouchableOpacity } from 'react-native';
+import { Text, View, StyleSheet, Modal, TouchableOpacity } from 'react-native';
 
 //I'm not sure how but I think this allows me to use the navigate functionality of react navigation. 
 import { createStackNavigator, createBottomTabNavigator } from 'react-navigation';
@@ -93,8 +93,9 @@ export default class AdditionScreen extends Component {
     }      
   }
   
+  //method called when the user close the Final Score modal when the quiz ends. This reset the game state and navigate the user to the home screen.
   resetState = () =>{
-      
+      //close the final score modal.
       this.setModalFinalScoreVisible(!this.state.modalFinalScoreVisible);
       
       //navigate the user to the Home screen
@@ -244,21 +245,3 @@ const styles = StyleSheet.create({
   }
   
 });
-/*
-        <Modal
-          animationType ="slide"
-          transparent={false}
-          visible={this.state.modalVisible}
-          onRequestClose ={() => {this.setModalVisible(!this.state.modalVisible);}} >
-          <View style={styles.modalContainer}>
-            <Text style={styles.finalScoreSection}>
-              Final score: {this.state.correct}%
-            </Text>
-            <TouchableOpacity
-              style={styles.buttonStyle}
-              onPress= {() => {this.setModalVisible(!this.state.modalVisible);}}>
-              <Text style={styles.modalButtonText}>Continue</Text>
-            </TouchableOpacity>            
-          </View>
-        </Modal>
-*/
