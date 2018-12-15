@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, View, StyleSheet, Alert } from 'react-native';
+import { Text, View, StyleSheet, Alert, Modal, TouchableOpacity } from 'react-native';
 
 //I'm not sure how but I think this allows me to use the navigate functionality of react navigation. 
 import { createStackNavigator, createBottomTabNavigator } from 'react-navigation';
@@ -24,7 +24,8 @@ export default class AdditionScreen extends Component {
       correct:0,        //number of questions been answered correctly
       lineA:10,         //top number of the equation
       lineB:1,          //bottom number of the equation
-      currentAnswer:0   //current user inputted answer
+      currentAnswer:0,   //current user inputted answer
+      modalVisible:false  //tip from react-native documentation
     }
   }
 
@@ -78,18 +79,24 @@ export default class AdditionScreen extends Component {
   
   //Method call in the updateCurrentcount method by the endGame function to display the final score. 
   showLastScore = () =>{
+    //let finalScore = Math.ceil((this.state.correct/this.state.currentCount)* 100);
+    //Alert.alert("Final Score: " + finalScore + "%");
+    this.setModalVisible(!this.state.modalVisible);
+  }
+  
+  getFinalScore = () =>{
     let finalScore = Math.ceil((this.state.correct/this.state.currentCount)* 100);
-    Alert.alert("Final Score: " + finalScore + "%");
-    
+      
+    return "hot pocket";
   }
   
   //Method call in the updateCurrentCount method to end the game, show the last score, and reset the the state. 
   endGame = () =>{
-    if(this.state.currentCount >= 10){
+    if(this.state.currentCount >= 3){
         
       //method call to display the final score    
       this.showLastScore();    
-        
+/*        
       //navigate the user to the Home screen
       this.props.navigation.navigate("Home");
         
@@ -101,8 +108,27 @@ export default class AdditionScreen extends Component {
       //reset the state to 0
       this.setState((state) => {
         return {correct: 0}
-      })         
+      }) 
+*/      
     }      
+  }
+  
+  resetState = () =>{
+      
+      this.setModalVisible(!this.state.modalVisible);
+      
+      //navigate the user to the Home screen
+      this.props.navigation.navigate("Home");
+        
+      //reset the state to 0
+      this.setState((state) => {
+        return {currentCount: 0}
+      })
+        
+      //reset the state to 0
+      this.setState((state) => {
+        return {correct: 0}
+      })       
   }
 
   //method use in the equation and submitbutton component to check if the user answer is correct and update the currentCount state.
@@ -118,8 +144,15 @@ export default class AdditionScreen extends Component {
         return {currentAnswer: text}
     })
   }
+  
+  //tips from react native documentation
+  //method to open/close final score modal
+  setModalVisible(visible){
+    this.setState({modalVisible: visible});
+  }
 
   render() {
+    let finalScore = Math.ceil((this.state.correct/this.state.currentCount)* 100);
     return (
       <View style={styles.container}>        
         <MathHeader title="Addition" 
@@ -132,6 +165,22 @@ export default class AdditionScreen extends Component {
           getAnswer={this.updateAnswer} />
         <SubmitButton 
           calculate={this.clickSubmit}  />
+        <Modal
+          animationType ="slide"
+          transparent={false}
+          visible={this.state.modalVisible}
+          onRequestClose ={() => {this.resetState()}} >
+          <View style={styles.modalContainer}>
+            <Text style={styles.finalScoreSection}>
+              Final score: {finalScore}%
+            </Text>
+            <TouchableOpacity
+              style={styles.buttonStyle}
+              onPress= {() => {this.resetState()}}>
+              <Text style={styles.modalButtonText}>Continue</Text>
+            </TouchableOpacity>            
+          </View>
+        </Modal>
       </View>
     );
   }
@@ -141,7 +190,52 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor:"white"
+  },
+  modalContainer:{
+    flex: 1,
+    backgroundColor: "white",
+    justifyContent:"space-around",
+    alignItems:"center",
+    fontSize:32
+  },
+  buttonStyle:{
+    backgroundColor:"green",
+    borderColor:"#ccc",
+    borderWidth:1,
+    borderRadius:30,
+    color:"white",
+    fontSize:32,
+    fontWeight:"bold",
+    padding:12,
+    textAlign:"center",
+    overflow:"hidden",
+    width:"50%",
+    elevation: 1
+  },
+  finalScoreSection:{
+    fontSize:32      
+  },
+  modalButtonText:{
+    fontSize:32,
+    color:"white"
   }
   
 });
-
+/*
+        <Modal
+          animationType ="slide"
+          transparent={false}
+          visible={this.state.modalVisible}
+          onRequestClose ={() => {this.setModalVisible(!this.state.modalVisible);}} >
+          <View style={styles.modalContainer}>
+            <Text style={styles.finalScoreSection}>
+              Final score: {this.state.correct}%
+            </Text>
+            <TouchableOpacity
+              style={styles.buttonStyle}
+              onPress= {() => {this.setModalVisible(!this.state.modalVisible);}}>
+              <Text style={styles.modalButtonText}>Continue</Text>
+            </TouchableOpacity>            
+          </View>
+        </Modal>
+*/
