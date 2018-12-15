@@ -74,7 +74,7 @@ export default class AdditionScreen extends Component {
         return {correct: state.correct + 1}
       })        
     }else{
-      Alert.alert("Wrong");
+      this.setModalInCorrectAnswerVisible(!this.state.modalInCorrectAnswerVisible);
     }  
       
   }
@@ -137,6 +137,11 @@ export default class AdditionScreen extends Component {
     this.setState({modalCorrectAnswerVisible: visible});
   }
 
+  //method to open/close incorrect answer modal
+  setModalInCorrectAnswerVisible(visible){
+    this.setState({modalInCorrectAnswerVisible: visible});
+  }
+
   render() {
     let finalScore = Math.ceil((this.state.correct/this.state.currentCount)* 100);
     return (
@@ -179,6 +184,22 @@ export default class AdditionScreen extends Component {
             <TouchableOpacity
               style={styles.buttonStyle}
               onPress= {() => {this.setModalCorrectAnswerVisible(!this.state.modalCorrectAnswerVisible);}}>
+              <Text style={styles.modalButtonText}>Continue</Text>
+            </TouchableOpacity>            
+          </View>
+        </Modal>
+        <Modal
+          animationType ="slide"
+          transparent={false}
+          visible={this.state.modalInCorrectAnswerVisible}
+          onRequestClose ={() => {this.setModalInCorrectAnswerVisible(!this.state.modalInCorrectAnswerVisible);}} >
+          <View style={styles.modalContainer}>
+            <Text style={styles.finalScoreSection}>
+              Wrong
+            </Text>
+            <TouchableOpacity
+              style={styles.buttonStyle}
+              onPress= {() => {this.setModalInCorrectAnswerVisible(!this.state.modalInCorrectAnswerVisible);}}>
               <Text style={styles.modalButtonText}>Continue</Text>
             </TouchableOpacity>            
           </View>
